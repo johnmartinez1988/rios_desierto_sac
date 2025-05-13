@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Buscar Cliente</title>
+    {% load static %}
+    <style>
+        body { font-family: sans-serif; }
+        #resultado { margin-top: 20px; border: 1px solid #ccc; padding: 15px; display: none; }
+        .campo { margin-bottom: 10px; }
+        .acciones { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Buscar Información de Cliente</h1>
+    <form id="buscarForm">
+        <div class="campo">
+            <label for="tipo_documento">Tipo de Documento:</label>
+            <select id="tipo_documento" name="tipo_documento" required>
+                <option value="">Seleccione tipo de documento</option>
+                {% for tipo in form.tipo_documento.field.queryset %}
+                    <option value="{{ tipo.id }}">{{ tipo.nombre }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="campo">
+            <label for="numero_documento">Número de Documento:</label>
+            <input type="text" id="numero_documento" name="numero_documento" required>
+        </div>
+        <div class="acciones">
+            <button type="button" onclick="buscarCliente()">Buscar</button>
+            <button type="button" onclick="generarReporteFidelizacion()">Generar Reporte Fidelización</button>
+        </div>
+    </form>
+
+    <div id="resultado">
+        <h2>Información del Cliente</h2>
+        <p><strong>Tipo de Documento:</strong> <span id="tipo_doc"></span></p>
+        <p><strong>Número de Documento:</strong> <span id="num_doc"></span></p>
+        <p><strong>Nombre:</strong> <span id="nombre"></span></p>
+        <p><strong>Apellido:</strong> <span id="apellido"></span></p>
+        <p><strong>Correo:</strong> <span id="correo"></span></p>
+        <p><strong>Teléfono:</strong> <span id="telefono"></span></p>
+        <h3>Compras Asociadas</h3>
+        <ul id="compras"></ul>
+        <button onclick="exportarExcel()">Exportar a Excel</button>
+    </div>
+
+    <script src="{% static 'core/script.js' %}"></script>
+    <script>
+        function exportarExcel() {
+            const tipoDocumento = document.getElementById('tipo_documento').value;
+            const numeroDocumento = document.getElementById('numero_documento').value;
+            window.location.href = `/exportar/excel/?numero_documento=${numeroDocumento}&tipo_documento=${tipoDocumento}`;
+        }
+
+        function generarReporteFidelizacion() {
+            window.location.href = '/api/generar_reporte_fidelizacion/';
+        }
+    </script>
+</body>
+</html>
